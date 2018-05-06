@@ -7,12 +7,12 @@ import numpy as np
 
 # 创建数据
 x = np.linspace(-2, 2, 100)
-#y = 3 * x + 4
+# y = 3 * x + 4
 y1 = 3 * x + 4
-y2 = x ** 3
+y2 = x ** 3 + 8
 
 # 创建图像
-#plt.plot(x, y)
+# plt.plot(x, y)
 plt.plot(x, y1)
 plt.plot(x, y2)
 
