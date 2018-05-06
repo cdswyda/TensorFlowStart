@@ -21,7 +21,17 @@ init = tf.global_variables_initializer()
 
 # 创建Session（会话）
 with tf.Session() as sess:
-    sess.run(init) # 初始化变量
+    # 初始化变量
+    sess.run(init)
+    # 创建写文件的writer
     writer = tf.summary.FileWriter(path, sess.graph)
     result = sess.run(y, {x: 3.0})
-    print("y = %s" % result) # 打印 y = W * x + b 的值，就是 7
+    # 打印 y = W * x + b 的值，就是 7
+    print("y = %s" % result) 
+    result = sess.run(y, {x: 4.0})
+    # 打印 y = W * x + b 的值，就是 9
+    print("y = %s" % result) 
+    result = sess.run(y, {x: 5.0})
+    print("y = %s" % result) 
+    result = sess.run(y, {x: 6.0})
+    print("y = %s" % result) 
