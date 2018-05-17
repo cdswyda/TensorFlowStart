@@ -31,7 +31,9 @@ output_y = tf.placeholder(tf.int32, [None, 10])  # 输出：10个数字的标签
 # 和总的元素大小来推导出 -1 的地方的维度应该是多少
 input_x_images = tf.reshape(input_x, [-1, 28, 28, 1])  # 改变形状之后的输入
 
+# mnist 中有三个数据集 test 、train、validate 分别用于测试 训练和验证
 # 从 Test（测试）数据集里选取 3000 个手写数字的图片和对应标签
+# [:3000] => [0:3000]
 test_x = mnist.test.images[:3000]  # 图片
 test_y = mnist.test.labels[:3000]  # 标签
 
@@ -43,8 +45,10 @@ conv1 = tf.layers.conv2d(
     kernel_size=[5, 5],     # 过滤器在二维的大小是 (5 * 5)
     strides=1,              # 步长是 1
     padding='same',         # same 表示输出的大小不变，因此需要在外围补零 2 圈
-    activation=tf.nn.relu   # 激活函数是 Relu
-)  # 形状 [28, 28, 32]
+    activation=tf.nn.relu   # 使用 Relu 激活函数
+)
+# 32 个过滤器 即32个分别对源进行处理，堆叠在一起
+# 以上处理完成后 形状变为 [28, 28, 32]
 
 
 # 第 1 层池化（亚采样）
@@ -52,7 +56,8 @@ pool1 = tf.layers.max_pooling2d(
     inputs=conv1,      # 形状 [28, 28, 32]
     pool_size=[2, 2],  # 过滤器在二维的大小是（2 * 2）
     strides=2          # 步长是 2
-)  # 形状 [14, 14, 32]
+)
+# 完成后形状 [14, 14, 32]
 
 
 # 第 2 层卷积
@@ -102,16 +107,19 @@ accuracy = tf.metrics.accuracy(
 # 创建会话
 sess = tf.Session()
 # 初始化变量：全局和局部
-init = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
+init = tf.group(tf.global_variables_initializer(),
+                tf.local_variables_initializer())
 sess.run(init)
 
 # 训练 5000 步。这个步数可以调节
 for i in range(5000):
     batch = mnist.train.next_batch(50)  # 从 Train（训练）数据集里取 “下一个” 50 个样本
-    train_loss, train_op_ = sess.run([loss, train_op], {input_x: batch[0], output_y: batch[1]})
+    train_loss, train_op_ = sess.run(
+        [loss, train_op], {input_x: batch[0], output_y: batch[1]})
     if i % 100 == 0:
         test_accuracy = sess.run(accuracy, {input_x: test_x, output_y: test_y})
-        print("第 {} 步的 训练损失={:.4f}, 测试精度={:.2f}".format(i, train_loss, test_accuracy))
+        print("第 {} 步的 训练损失={:.4f}, 测试精度={:.2f}".format(
+            i, train_loss, test_accuracy))
 
 # 测试：打印 20 个预测值 和 真实值
 test_output = sess.run(logits, {input_x: test_x[:20]})
