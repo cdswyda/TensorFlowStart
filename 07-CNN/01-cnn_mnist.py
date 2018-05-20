@@ -68,7 +68,8 @@ conv2 = tf.layers.conv2d(
     strides=1,             # 步长是 1
     padding='same',        # same 表示输出的大小不变，因此需要在外围补零 2 圈
     activation=tf.nn.relu  # 激活函数是 Relu
-)  # 形状 [14, 14, 64]
+)
+# 完成后形状 [14, 14, 64]
 
 
 # 第 2 层池化（亚采样）
@@ -76,7 +77,8 @@ pool2 = tf.layers.max_pooling2d(
     inputs=conv2,      # 形状 [14, 14, 64]
     pool_size=[2, 2],  # 过滤器在二维的大小是（2 * 2）
     strides=2          # 步长是 2
-)  # 形状 [7, 7, 64]
+)
+# 形状 [7, 7, 64]
 
 # 平坦化（flat）。降维
 flat = tf.reshape(pool2, [-1, 7 * 7 * 64])  # 形状 [7 * 7 * 64, ]
@@ -87,9 +89,9 @@ dense = tf.layers.dense(inputs=flat, units=1024, activation=tf.nn.relu)
 # Dropout : 丢弃 50%（rate=0.5）
 dropout = tf.layers.dropout(inputs=dense, rate=0.5)
 
-
 # 10 个神经元的全连接层，这里不用激活函数来做非线性化了
-logits = tf.layers.dense(inputs=dropout, units=10)  # 输出。形状 [1, 1, 10]
+# 输出。形状 [1, 1, 10]
+logits = tf.layers.dense(inputs=dropout, units=10)
 
 # 计算误差（先用 Softmax 计算百分比概率，
 # 再用 Cross entropy（交叉熵）来计算百分比概率和对应的独热码之间的误差）
